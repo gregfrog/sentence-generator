@@ -3,6 +3,11 @@ import random
 import operator
 import os
 
+def digit():
+	digitList = [str(x) for x in list(range(10))]
+	return random.choice(digitList)
+	
+
 def parse_grammar(file_path):
 	"""
 	Generate a grammar from a file describing the production rules.
@@ -31,6 +36,8 @@ def parse_grammar(file_path):
 		if len(symbols) <= 2 or symbols[1] != '->':
 			raise Exception('Each production line should be in the format: X -> A B ... C')
 
+		symbols = [globals()[s[:-2]] if s[-2:] == "()" else s for s in symbols]
+		symbols = [s[1:-1] if isinstance(s,str) and s[0] == "'" and s[-1] == "'" else s for s in symbols]
 		if symbols[0] not in grammar:
 			grammar[symbols[0]] = []
 
@@ -99,7 +106,8 @@ def generate_random_sentence(grammar, start_symbol, print_sentence = True):
 			choices = grammar[sentence[idx]]
 			choice = random.choice(choices)
 			sentence = sentence[:idx] + choice + sentence[idx+1:]
-	sentence = " ".join([word.upper() for word in sentence])
+	sentence = "".join(
+		[word if isinstance(word, str) else word() for word  in sentence])
 	if print_sentence:
 		print(sentence)
 	return sentence
@@ -120,7 +128,10 @@ if __name__ == '__main__':
 	terminals = find_terminals(grammar)
 	
 	if args.print_terminal_symbols:
-		for terminal in sorted(terminals):
+		stringTerminals = [ str(x) for x in list(terminals)]
+		for terminal in sorted(stringTerminals):
+			if terminal == '':
+				terminal = "''"
 			print(terminal)
 		print('-----------------')
 		print('There are', len(terminals), 'terminals')

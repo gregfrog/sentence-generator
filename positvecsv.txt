@@ -1,0 +1,16 @@
+row
+row -> n_pcn comma thing1 comma thing2
+comma -> ','
+p_pcn -> 3 sixdigits
+n_pcn -> 1 sixdigits
+n_pcn -> 9 sixdigits
+n_pcn -> 0 sixdigits
+n_pcn -> 1 maybesixdigits
+n_pcn -> 9 maybesixdigits
+n_pcn -> 0 maybesixdigits
+sixdigits -> digit() digit() digit() digit() digit() digit()
+maybesixdigits -> optionaldigit optionaldigit optionaldigit optionaldigit optionaldigit optionaldigit optionaldigit optionaldigit
+optionaldigit -> ''
+optionaldigit -> digit()
+thing1 -> t1
+thing2 -> t2

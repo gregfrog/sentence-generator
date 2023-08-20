@@ -18,6 +18,9 @@ The following lines are the production rules of the grammar. The set of terminal
 Each production rule must have the format X -> A B .. C
 The left side should be a single non-terminal symbol.
 The right side should be a list of symbols (terminal or non-terminal), separated by spaces.
+Terminals may be quoted, enalbing embedded space in terminals.  
+Terminals may end with "()" in which case they will invoke a fuinction of the same name in the package, currently only digits is implemented.
+Unlike the original code, there are no spaces between generated terms.  This enables using this to generate test data files.
 
 #### Examples:
 

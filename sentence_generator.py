@@ -2,6 +2,7 @@ import argparse
 import random
 import operator
 import os
+import shlex
 
 def digit():
 	digitList = [str(x) for x in list(range(10))]
@@ -25,6 +26,9 @@ def parse_grammar(file_path):
 	if len(content) <= 1:
 		raise Exception('Grammar should have at least one production rule and a starting symbol')
 
+	# strip comments
+	content = [textLine for textLine in content if len(textLine) > 0 and textLine[0] != "#"]
+
 	# First line should be the starting symbol
 	start_symbol = content[0]
 
@@ -32,12 +36,13 @@ def parse_grammar(file_path):
 	for line in content[1:]:
 		# Each line should be in the format:
 		# X -> A B ... C
-		symbols = line.split()
+#		symbols = line.split()
+		symbols = shlex.split(line)
 		if len(symbols) <= 2 or symbols[1] != '->':
-			raise Exception('Each production line should be in the format: X -> A B ... C')
+			raise Exception(f'Each production line should be in the format: X -> A B ... C, read "{line}"')
 
 		symbols = [globals()[s[:-2]] if s[-2:] == "()" else s for s in symbols]
-		symbols = [s[1:-1] if isinstance(s,str) and s[0] == "'" and s[-1] == "'" else s for s in symbols]
+		symbols = [s[1:-1] if isinstance(s,str) and len(s) > 0 and s[0] == "'" and s[-1] == "'" else s for s in symbols]
 		if symbols[0] not in grammar:
 			grammar[symbols[0]] = []
 

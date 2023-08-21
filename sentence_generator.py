@@ -3,11 +3,26 @@ import random
 import operator
 import os
 import shlex
+import pandas as pd 
+
+lastpcn = 3000000
+
+csv = pd.read_csv("usstates.csv")
+states = sorted(csv["stusps"])
+
+def randomstate():
+	rndst  = random.sample(states,1)[0]
+	return rndst
 
 def digit():
 	digitList = [str(x) for x in list(range(10))]
 	return random.choice(digitList)
-	
+
+def pcnsequence():
+	global lastpcn
+	lastpcn = lastpcn + 1
+	return str(lastpcn)
+
 
 def parse_grammar(file_path):
 	"""
@@ -121,10 +136,13 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Grammar utils')
 	parser.add_argument('--grammar', type=str, default='simple_grammar.txt',
 					  help='Path to grammar file.')
-	parser.add_argument('--print_terminal_symbols', type=bool, default=False,
+	parser.add_argument('--print_terminal_symbols', type=bool, const=True, nargs='?',
 					  help='Print the terminal symbols of the grammar.')
-	parser.add_argument('--num_sentences', type=int, default=0,
+	parser.add_argument('--numbered_output', type=bool, const=True, nargs='?',
+					  help='Print the terminal symbols of the grammar.')
+	parser.add_argument('--num_sentences', type=int, default=1,
 					  help='The number of random sentences to generate.')
+	
 
 	args = parser.parse_args()
 
@@ -132,7 +150,7 @@ if __name__ == '__main__':
 
 	terminals = find_terminals(grammar)
 	
-	if args.print_terminal_symbols:
+	if args.print_terminal_symbols == True:
 		stringTerminals = [ str(x) for x in list(terminals)]
 		for terminal in sorted(stringTerminals):
 			if terminal == '':
@@ -146,4 +164,8 @@ if __name__ == '__main__':
 		sentences.append(generate_random_sentence(grammar, start_symbol, False))
 
 	for i in range(len(sentences)):
-		print("%d. %s" % (i, sentences[i]))
+		if args.numbered_output == True:
+			print("%d. %s" % (i, sentences[i]))
+		else:
+			print("%s" % (sentences[i]))
+			
